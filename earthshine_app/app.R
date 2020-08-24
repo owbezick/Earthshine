@@ -6,6 +6,7 @@ library(shinydashboard)
 library(leaflet)
 library(googlesheets4)
 library(tidyverse)
+library(shinyWidgets)
 # Google sheets authentication ----
 gs4_auth(
   cache = ".secrets",
@@ -30,7 +31,7 @@ ui <- dashboardPage(
                      href="https://earthshinenc.com/", 
                      tags$img(src="logo.png", 
                               title="Earthshine Logo", 
-                              width="50%",
+                              width="50%"
                      )
                    )
           )
@@ -39,7 +40,7 @@ ui <- dashboardPage(
                      href="https://earthshinenc.com/reservations/", 
                      tags$img(src="book_now.png", 
                               title="nook now", 
-                              width="20%",
+                              width="20%"
                      )
                    )
           )
@@ -48,13 +49,11 @@ ui <- dashboardPage(
     , fluidRow(
       box(width = 3, title = NULL
           , div(img(src = "hiker_photo.png", height = "60%", width = "100%"), style = "text-align: center;")
-          , checkboxGroupInput("types"
-                               , ""
-                               , choices = c("Hikes", "Mountain Bike", "Waterfalls", "White Water", "Blueridge Parkway Scenic Views")
-                               , selected = c("Hikes", "Mountain Bike", "Waterfalls", "White Water", "Blueridge Parkway Scenic Views"))
-          , sliderInput(inputId = "distance", label = "Distance", min = 0, max = 50, step = 1, value = 50)
-          , sliderInput(inputId = "budget", label = "Budget", min = 0, max = 2000, step = 5, value = 2000)
-      )
+          , uiOutput("typecheckbox")
+          , uiOutput("distanceSlider")
+          , uiOutput("budgetPicker")
+          , textOutput("selection_number")
+          )
       , box(width = 9, status = "primary", title = NULL, solidHeader = T
             , leafletOutput("map", height = "800px")
       )
@@ -72,6 +71,44 @@ server <- function(input, output) {
       filter(type %in% input$types
              , price <= input$budget
              , distance_from <= input$distance)
+  })
+  
+  output$typecheckbox <- renderUI({
+    types <- unique(map_data$type)
+    checkboxGroupInput("types"
+                         , "Adventures"
+                         , choices = types
+                         , selected = types)
+  })
+  
+  output$distanceSlider <- renderUI({
+    maxDistance <- max(map_data$distance_from)
+    minDistance <- min(map_data$distance_from)
+    sliderInput(inputId = "distance"
+                , label = "Distance (mi)"
+                , min = minDistance
+                , max = maxDistance
+                , step = 1
+                , value = maxDistance)
+  })
+  
+  output$budgetPicker <- renderUI({
+    choices = list("Free" = 0, "$" = 1,"$$" = 2, "$$$" = 3)
+    pickerInput(inputId = "budget", label = "Budget", choices = choices, selected = choices, multiple = T)
+  })
+  
+  r_selection_number <- reactive(
+    nrow(r_map_data())
+  )
+  
+  output$selection_number <- renderText({
+    number <- r_selection_number()
+    if (number == 1){
+      text = "result"
+    } else {
+    text = "results"
+    }
+    paste(number, text)
   })
   
   output$map <- renderLeaflet({
