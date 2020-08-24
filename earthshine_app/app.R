@@ -75,9 +75,7 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
-    earthshine_content <- paste(sep = "<br/>",
-                                "<b><a href='https://earthshinenc.com/'>Earthshine Lodge</a></b>",
-                                "Home Base")
+    earthshine_content <- '<a href="https://earthshinenc.com/"> <img src = "logo.png" style = "width:100%;" > </a>'
     data <- r_map_data()
     
     leaflet(data = data) %>%
@@ -85,7 +83,10 @@ server <- function(input, output) {
       addMarkers(label = data$name
                  , popup = data$description
       ) %>%
-      addPopups(lat = 35.155076, lng = -82.898274, popup = earthshine_content)
+      addPopups(lat = 35.155076, lng = -82.898274
+                , popup = earthshine_content
+                , options = popupOptions(keepInView = TRUE, closeButton = FALSE, closeOnClick = FALSE)
+      )
   })
 }
 
