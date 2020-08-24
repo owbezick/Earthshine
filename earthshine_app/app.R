@@ -69,7 +69,7 @@ server <- function(input, output) {
     req(input$types, input$budget, input$distance)
     df <- map_data %>%
       filter(type %in% input$types
-             , price <= input$budget
+             , price %in% input$budget
              , distance_from <= input$distance)
   })
   
@@ -114,7 +114,7 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
-    earthshine_content <- '<a href="https://earthshinenc.com/"> <img src = "logo.png" style = "width:100%;" > </a>'
+    earthshine_content <- '<a href="https://earthshinenc.com/reservations/"> <img src = "logo.png" style = "width:250%;" > </a>'
     data <- r_map_data()
     
     leaflet(data = data) %>%
