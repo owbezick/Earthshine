@@ -1,0 +1,12 @@
+name: Earshine
+title: Earshine
+username:
+account: orionconsulting
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2696266
+bundleId: 3545533
+url: https://orionconsulting.shinyapps.io/Earshine/
+when: 1598117227.13013
+asMultiple: FALSE
+asStatic: FALSE

@@ -1,0 +1,44 @@
+.box.box-primary {
+    border-top-color: #F7AF00;
+}
+
+.box.box-solid.box-primary>.box-header {
+    color: #fff;
+    background: #F7AF00;
+    background-color: #F7AF00;
+}
+
+.box.box-solid.box-primary {
+    border: 5px solid #F7AF00;
+}
+
+.box-header {
+    padding: 0px;
+}
+
+body {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 24px;
+    line-height: 1.42857143;
+    color: #333;
+    background-color: #fff;
+}
+
+.box.box-solid.box-danger>.box-header {
+    color: #F7AF00;
+    background: #094367;
+    background-color: #094367;
+    text-align: center;
+    font-size:24px;
+}
+.box.box-solid.box-danger {
+    border: 0px solid #dd4b39;
+}
+
+.box-header .box-title {
+    font-size: 24px;
+}
+
+.column {
+  position: relative;
+}
