@@ -24,18 +24,27 @@ ui <- dashboardPage(
     includeCSS("style.css")
     , fluidRow(
       box(width = 12, status = "danger", solidHeader = T,  title = "Your Basecamp For Adventure"
-          , HTML('
-            <div class="container" style="text-align:center;">
-                <div class="row">
-                    <div class="column" style = "position: relative;">
-                        <img width="25%" src="logo.png">
-                        <img width="10%" src="book_now.png" style= "position: absolute; right: 0;">
-                    </div>
-                </div>
-            </div>
-               ')
+          , column(width = 4)
+          , column(width = 4, align = "center"
+                   , tags$a(
+                     href="https://earthshinenc.com/", 
+                     tags$img(src="logo.png", 
+                              title="Earthshine Logo", 
+                              width="50%",
+                     )
+                   )
+          )
+          , column(width = 4, align = "right"
+                   , tags$a(
+                     href="https://earthshinenc.com/reservations/", 
+                     tags$img(src="book_now.png", 
+                              title="nook now", 
+                              width="20%",
+                     )
+                   )
           )
       )
+    )
     , fluidRow(
       box(width = 3, title = NULL
           , div(img(src = "hiker_photo.png", height = "60%", width = "100%"), style = "text-align: center;")
