@@ -62,7 +62,7 @@ ui <- dashboardPage(
 )
 # Application Server -----
 server <- function(input, output) {
-  
+  # Data -----
   map_data <- read_sheet("https://docs.google.com/spreadsheets/d/1C1xjmxRPfIKKd6nZh_S4vi39xKQs3PyxjnrbCrmG8sw/edit#gid=0")
   
   r_map_data <- reactive({
@@ -73,6 +73,7 @@ server <- function(input, output) {
              , distance_from <= input$distance)
   })
   
+  # Filters -----
   output$typecheckbox <- renderUI({
     types <- unique(map_data$type)
     checkboxGroupInput("types"
@@ -101,6 +102,7 @@ server <- function(input, output) {
     nrow(r_map_data())
   )
   
+  # UI Outputs ----
   output$selection_number <- renderText({
     number <- r_selection_number()
     if (number == 1){

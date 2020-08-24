@@ -38,3 +38,10 @@ body {
 .box-header .box-title {
     font-size: 24px;
 }
+
+
+.checkbox input[type=checkbox]{
+    position: absolute;
+    margin-top: 10px;
+    margin-left: -20px;
+}
