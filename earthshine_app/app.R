@@ -7,6 +7,7 @@ library(leaflet)
 library(googlesheets4)
 library(tidyverse)
 library(shinyWidgets)
+library(htmltools)
 # Google sheets authentication ----
 gs4_auth(
   cache = ".secrets",
@@ -53,7 +54,7 @@ ui <- dashboardPage(
           , uiOutput("distanceSlider")
           , uiOutput("budgetPicker")
           , textOutput("selection_number")
-          )
+      )
       , box(width = 9, status = "primary", title = NULL, solidHeader = T
             , leafletOutput("map", height = "800px")
       )
@@ -77,9 +78,9 @@ server <- function(input, output) {
   output$typecheckbox <- renderUI({
     types <- unique(map_data$type)
     checkboxGroupInput("types"
-                         , "Adventures"
-                         , choices = types
-                         , selected = types)
+                       , "Adventures"
+                       , choices = types
+                       , selected = types)
   })
   
   output$distanceSlider <- renderUI({
@@ -108,23 +109,26 @@ server <- function(input, output) {
     if (number == 1){
       text = "result"
     } else {
-    text = "results"
+      text = "results"
     }
     paste(number, text)
   })
   
   output$map <- renderLeaflet({
-    earthshine_content <- '<a href="https://earthshinenc.com/reservations/"> <img src = "logo.png" style = "width:250%;" > </a>'
+    logoIcon <- makeIcon(iconUrl = "www/logo.png", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
     data <- r_map_data()
+    data$popup_text <- paste0('<strong>', data$name, '</strong>', '<br>'
+                              , data$description) %>%
+      lapply(HTML)
     
     leaflet(data = data) %>%
       addProviderTiles(provider = "Esri.WorldTopoMap") %>%
       addMarkers(label = data$name
-                 , popup = data$description
+                 , popup = data$popup_text
       ) %>%
-      addPopups(lat = 35.155076, lng = -82.898274
-                , popup = earthshine_content
-                , options = popupOptions(keepInView = TRUE, closeButton = FALSE, closeOnClick = FALSE)
+      addMarkers(lat = 35.155076, lng = -82.898274
+                 , icon = logoIcon
+                 , popup = HTML('<a href="https://earthshinenc.com/"> Main Site </a> <br> <a href="https://earthshinenc.com/reservations/"> Reservations Page </a>')
       )
   })
 }

@@ -31,6 +31,7 @@ body {
     text-align: center;
     font-size:24px;
 }
+
 .box.box-solid.box-danger {
     border: 0px solid #dd4b39;
 }
@@ -39,27 +40,21 @@ body {
     font-size: 24px;
 }
 
-.leaflet-popup-content-wrapper {
-    padding: 0px;
-    text-align: left;
-    border-radius: 12px;
-}
 .checkbox input[type=checkbox]{
     position: absolute;
     margin-top: 10px;
     margin-left: -20px;
 }
+
 element.style {
     width: 100%;
     z-index:1;
 }
-.leaflet-popup-content {
-    margin: 0px 0px;
-    line-height: 1.4;
-}
+
 .leaflet-marker-pane {
     z-index: 600;
 }
-.leaflet-popup-pane {
-    z-index: 500;
+
+.logoIconClass {
+  z-index: 500;
 }
