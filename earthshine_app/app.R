@@ -117,8 +117,13 @@ server <- function(input, output) {
   output$map <- renderLeaflet({
     logoIcon <- makeIcon(iconUrl = "www/logo.png", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
     data <- r_map_data()
-    data$popup_text <- paste0('<strong>', data$name, '</strong>', '<br>'
-                              , data$description) %>%
+    data$popup_text <- paste0('<strong>', data$name, '</strong>'
+                              , '<br>'
+                              , data$description
+                              , '<br>'
+                              , data$address_line_one
+                              , '<br>'
+                              , data$address_line_two) %>%
       lapply(HTML)
     
     leaflet(data = data) %>%
