@@ -133,7 +133,7 @@ server <- function(input, output) {
       ) %>%
       addMarkers(lat = 35.155076, lng = -82.898274
                  , icon = logoIcon
-                 , popup = HTML('<a href="https://earthshinenc.com/"> Main Site </a> <br> <a href="https://earthshinenc.com/reservations/"> Reservations Page </a>')
+                 , popup = HTML('<a href="https://earthshinenc.com/"> Website </a> <br> <a href="https://earthshinenc.com/reservations/"> Book Now </a>')
       )
   })
 }
