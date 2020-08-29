@@ -8,15 +8,29 @@ library(googlesheets4)
 library(tidyverse)
 library(shinyWidgets)
 library(htmltools)
+library(googledrive)
+# designate project-specific cache
+# options(gargle_oauth_cache = ".drivesecrets")
+# # # check the value of the option, if you like
+# gargle::gargle_oauth_cache()
+# # # trigger auth on purpose to store a token in the specified cache
+# # # a broswer will be opened
+#googledrive::drive_auth()
+# # # see your token file in the cache, if you like
+# list.files(".drivesecrets/")
+#gs4_deauth()
 # Google sheets authentication ----
 gs4_auth(
   cache = ".secrets",
   email = "owen.bezick@nissaconsulting.com"
 )
+# drive_auth(
+#   cache = ".drivesecrets",
+#   email = "owen.bezick@nissaconsulting.com"
+# )
 
 # Application UI -----
 ui <- dashboardPage(
-  
   # Application title
   dashboardHeader(disable = T),
   dashboardSidebar(disable = T),
@@ -73,7 +87,7 @@ server <- function(input, output) {
              , price %in% input$budget
              , distance_from <= input$distance)
   })
-  
+  output$testimg <- renderUI(img(src = map_data[1, "thumbnail_link"]))
   # Filters -----
   output$typecheckbox <- renderUI({
     types <- unique(map_data$type)
@@ -117,13 +131,26 @@ server <- function(input, output) {
   output$map <- renderLeaflet({
     logoIcon <- makeIcon(iconUrl = "www/logo.png", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
     data <- r_map_data()
-    data$popup_text <- paste0('<strong>', data$name, '</strong>'
+    data$popup_text <- paste0('<center>'
+                              , '<strong>', data$name, '</strong>'
                               , '<br>'
-                              , data$description
+                              , '<img src = '
+                              ,"'"
+                              , data$thumbnail_link
+                              , "' style='width:75%;height:75%; text-align:center;'"
+                              , '>'
+                              , '</center>'
+                              , '<br>'
+                              , '<strong>', "Address", '</strong>'
                               , '<br>'
                               , data$address_line_one
                               , '<br>'
-                              , data$address_line_two) %>%
+                              , data$address_line_two
+                              , '<br>'
+                              ,'<strong>', "Description", '</strong>'
+                              , '<br>'
+                              , data$description
+                              ) %>%
       lapply(HTML)
     
     leaflet(data = data) %>%
