@@ -53,7 +53,7 @@ ui <- dashboardPage(
           , uiOutput("typecheckbox")
           , uiOutput("distanceSlider")
           , uiOutput("budgetPicker")
-          , textOutput("selection_number")
+          , div(textOutput("selection_number"), class = "selection-number")
       )
       , box(width = 9, status = "primary", title = NULL, solidHeader = T
             , leafletOutput("map", height = "800px")
@@ -78,7 +78,7 @@ server <- function(input, output) {
   output$typecheckbox <- renderUI({
     types <- unique(map_data$type)
     checkboxGroupInput("types"
-                       , "Adventures"
+                       , div("Adventures", class = "picker-titles")
                        , choices = types
                        , selected = types)
   })
@@ -87,7 +87,7 @@ server <- function(input, output) {
     maxDistance <- max(map_data$distance_from)
     minDistance <- min(map_data$distance_from)
     sliderInput(inputId = "distance"
-                , label = "Distance (mi)"
+                , label = div("Distance (mi)", class = "picker-titles")
                 , min = minDistance
                 , max = maxDistance
                 , step = 1
@@ -96,7 +96,7 @@ server <- function(input, output) {
   
   output$budgetPicker <- renderUI({
     choices = list("Free" = 0, "$" = 1,"$$" = 2, "$$$" = 3)
-    pickerInput(inputId = "budget", label = "Budget", choices = choices, selected = choices, multiple = T)
+    pickerInput(inputId = "budget", label = div("Budget", class = "picker-titles"), choices = choices, selected = choices, multiple = T)
   })
   
   r_selection_number <- reactive(

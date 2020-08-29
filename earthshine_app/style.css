@@ -18,7 +18,7 @@
 
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 24px;
+    font-size: 20px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
@@ -31,7 +31,13 @@ body {
     text-align: center;
     font-size:24px;
 }
-
+.picker-titles {
+  font-size:24px;
+}
+.selection-number {
+  font-size:24px;
+  font-weight: bold;
+}
 .box.box-solid.box-danger {
     border: 0px solid #dd4b39;
 }
@@ -42,7 +48,7 @@ body {
 
 .checkbox input[type=checkbox]{
     position: absolute;
-    margin-top: 10px;
+    margin-top: 6px;
     margin-left: -20px;
 }
 
