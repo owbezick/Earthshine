@@ -107,9 +107,9 @@ server <- function(input, output) {
   output$selection_number <- renderText({
     number <- r_selection_number()
     if (number == 1){
-      text = "result"
+      text = "result found"
     } else {
-      text = "results"
+      text = "results found"
     }
     paste(number, text)
   })
