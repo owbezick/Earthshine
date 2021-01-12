@@ -1,6 +1,3 @@
-#
-#
-
 # Libraries ----
 library(shinydashboard)
 library(leaflet)
@@ -137,7 +134,7 @@ server <- function(input, output) {
                               , '<img src = '
                               ,"'"
                               , data$thumbnail_link
-                              , "' style='width:75%;height:75%; text-align:center;'"
+                              , "' style='width:100%;height:100%; text-align:center;'"
                               , '>'
                               , '</center>'
                               , '<br>'
