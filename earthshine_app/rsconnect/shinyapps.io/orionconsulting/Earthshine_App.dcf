@@ -5,8 +5,8 @@ account: orionconsulting
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2696296
-bundleId: 3570875
+bundleId: 4086858
 url: https://orionconsulting.shinyapps.io/Earthshine_App/
-when: 1598734206.88622
+when: 1610466686.23502
 asMultiple: FALSE
 asStatic: FALSE
