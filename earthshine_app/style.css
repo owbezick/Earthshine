@@ -18,7 +18,7 @@
 
 body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 20px;
+    font-size: 14px;
     line-height: 1.42857143;
     color: #333;
     background-color: #fff;
@@ -32,10 +32,10 @@ body {
     font-size:24px;
 }
 .picker-titles {
-  font-size:24px;
+  font-size:18px;
 }
 .selection-number {
-  font-size:24px;
+  font-size:14px;
   font-weight: bold;
 }
 .box.box-solid.box-danger {
