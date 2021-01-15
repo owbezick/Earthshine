@@ -17,7 +17,7 @@ ui <- dashboardPage(
   dashboardBody(
     includeCSS("style.css")
     , fluidRow(
-      box(width = 12, status = "danger", solidHeader = T,  title = "Your Basecamp For Adventure", height = "12vh"
+      box(width = 12, status = "danger", solidHeader = T,  title = "Your Basecamp For Adventure", height = "100px"
           , column(width = 4)
           , column(width = 4, align = "center"
                    , tags$a(
@@ -25,7 +25,7 @@ ui <- dashboardPage(
                      tags$img(src= "earthshine_logo.png", 
                               title= "Earthshine Logo"
                               , width = "50%"
-                              , height = "55vh"
+                              , height = "50px"
                               
                      )
                    )
@@ -47,13 +47,13 @@ ui <- dashboardPage(
       box(width = 3, title = NULL, height = "80vh"
           , div(
             img(src = "hiker_photo.png"
-                , height = "30%"
-                , width = "50%%")
+                , height = "60%"
+                , width = "100%")
             , style = "text-align: center;"
           )
-          , uiOutput("typecheckbox")
+          , uiOutput("typeDrop")
+          , uiOutput("nameSearch")
           , uiOutput("distanceSlider")
-          # , uiOutput("budgetPicker")
           , div(textOutput("selection_number"), class = "selection-number")
       )
       , box(width = 9, status = "primary", title = NULL, solidHeader = T, height = "80vh"
@@ -77,20 +77,38 @@ server <- function(input, output) {
   map_data <- read_sheet("https://docs.google.com/spreadsheets/d/1C1xjmxRPfIKKd6nZh_S4vi39xKQs3PyxjnrbCrmG8sw/edit#gid=0")
   
   r_map_data <- reactive({
-    req(input$types, input$distance)
+    req(input$distance)
     df <- map_data %>%
-      filter(type %in% input$types
-             # , price %in% input$budget
-             , distance_from <= input$distance)
+      filter(
+         name %in% input$names
+        , distance_from <= input$distance)
   })
   
   # Filters -----
-  output$typecheckbox <- renderUI({
+  output$typeDrop <- renderUI({
     types <- unique(map_data$type)
-    checkboxGroupInput("types"
-                       , div("Adventures", class = "picker-titles")
-                       , choices = types
-                       , selected = types)
+    pickerInput("types"
+                , div("Adventure Types:", class = "picker-titles")
+                , multiple = T
+                , choices = types
+                , selected = types)
+  })
+  
+  output$nameSearch <- renderUI({
+    req(input$types)
+    names <- map_data %>%
+      filter(type %in% input$types) %>%
+      select(name, type)
+    
+    pickerInput("names"
+                , div("Search Adventures:", class = "picker-titles")
+                , multiple = T
+                , choices = lapply(split(names$name, names$type), as.list)
+                , selected = names$name
+                , options =  pickerOptions(liveSearch = T
+                                           , liveSearchStyle = 'startsWith'
+                )
+    )
   })
   
   output$distanceSlider <- renderUI({
@@ -125,9 +143,11 @@ server <- function(input, output) {
   })
   
   output$map <- renderLeaflet({
+    req(r_map_data())
     logoIcon <- makeIcon(iconUrl = "www/logo.png", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
-    ashevilleIcon <- makeIcon(iconUrl = "www/asheville.png", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
-    greenvilleIcon <- makeIcon(iconUrl = "www/greenville.jpg", iconHeight = 40, iconWidth = 100, className = "logoIconClass")
+    ashevilleContent <- "<b><a href='http://https://https://www.exploreasheville.com/'>Asheville</a></b>"
+    greenvilleContent <- "<b><a href='http://https://www.greenvillenc.gov/'>Greenville</a></b>"
+    airportIcon <- makeIcon(iconUrl = "www/airport.png", iconHeight = 25, iconWidth = 25, className = "logoIconClass")
     data <- r_map_data()
     data$popup_text <- paste0('<center>'
                               , '<strong>', data$name, '</strong>'
@@ -167,17 +187,27 @@ server <- function(input, output) {
                    Book Now
                    </a>')
       ) %>%
-      addMarkers(
-        lat = 35.5951
-        , lng = -82.5515
-        , icon = ashevilleIcon
-        , popup = HTML("Asheville")
-      ) %>%
-      addMarkers(
+      addLabelOnlyMarkers(
         lat = 34.8526
         , lng = -82.3940
-        , icon = greenvilleIcon
-        , popup = HTML("Asheville")
+        , label = "Greenville"
+        , labelOptions = labelOptions(noHide = T, textsize = "12px")) %>%
+      addLabelOnlyMarkers(
+        lng = -82.5515
+        , lat = 35.5951
+        , label = "Asheville"
+        , labelOptions = labelOptions(noHide = T, textsize = "12px")) %>%
+      addMarkers(
+        lat = 35.4350
+        , lng = -82.5383
+        , icon = airportIcon
+        , popup = HTML("Asheville Regional Airport")
+      ) %>%
+      addMarkers(
+        lat = 34.5356
+        , lng = -82.1249
+        , icon = airportIcon
+        , popup = HTML("Greenville-Spartanburg Airport")
       )
   })
 }
