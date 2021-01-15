@@ -17,7 +17,7 @@ ui <- dashboardPage(
   dashboardBody(
     includeCSS("style.css")
     , fluidRow(
-      box(width = 12, status = "danger", solidHeader = T,  title = "Your Basecamp For Adventure", height = "100px"
+      box(width = 12, height = "100px", status = "danger", solidHeader = T,  title = "Your Basecamp For Adventure"
           , column(width = 4)
           , column(width = 4, align = "center"
                    , tags$a(
@@ -26,7 +26,6 @@ ui <- dashboardPage(
                               title= "Earthshine Logo"
                               , width = "50%"
                               , height = "50px"
-                              
                      )
                    )
           )
@@ -36,7 +35,8 @@ ui <- dashboardPage(
                      target = "_blank"
                      , tags$img(src="book_now.png", 
                                 title="book now", 
-                                width="20%"
+                                width="100px"
+                                , height = "50px"
                                 
                      )
                    )
@@ -44,7 +44,7 @@ ui <- dashboardPage(
       )
     )
     , fluidRow(
-      box(width = 3, title = NULL, height = "80vh"
+      box(width = 3, height = "80vh", title = NULL
           , div(
             img(src = "hiker_photo.png"
                 , height = "60%"
@@ -56,7 +56,7 @@ ui <- dashboardPage(
           , uiOutput("distanceSlider")
           , div(textOutput("selection_number"), class = "selection-number")
       )
-      , box(width = 9, status = "primary", title = NULL, solidHeader = T, height = "80vh"
+      , box(width = 9, height = "80vh", status = "primary", title = NULL, solidHeader = T
             , leafletOutput("map", height = "77vh")
       )
     )
@@ -64,6 +64,7 @@ ui <- dashboardPage(
 )
 # Application Server -----
 server <- function(input, output) {
+  # OAuth ----
   options(gargle_oauth_cache = ".new_secrets")# designate project-specific cache
   app <- httr::oauth_app(appname = "earthshine_desktop_client",
                          key = "828707814267-k11guhpt2ge8s0hq2ipohu1q01bipinu.apps.googleusercontent.com"
@@ -85,6 +86,7 @@ server <- function(input, output) {
   })
   
   # Filters -----
+  # Add de/select all from picker
   output$typeDrop <- renderUI({
     types <- unique(map_data$type)
     pickerInput("types"
@@ -93,7 +95,7 @@ server <- function(input, output) {
                 , choices = types
                 , selected = types)
   })
-  
+  # Select a singular item from this search bar to show up on map
   output$nameSearch <- renderUI({
     req(input$types)
     names <- map_data %>%
