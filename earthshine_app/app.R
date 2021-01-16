@@ -6,7 +6,7 @@ library(tidyverse)
 library(shinyWidgets)
 library(htmltools)
 library(googledrive)
-
+library(leaflet.extras)
 # Application UI -----
 ui <- dashboardPage(
   # Application title
@@ -52,7 +52,7 @@ ui <- dashboardPage(
             , style = "text-align: center;"
           )
           , uiOutput("typeDrop")
-          , uiOutput("nameSearch")
+          # , uiOutput("nameSearch")
           , uiOutput("distanceSlider")
           , div(textOutput("selection_number"), class = "selection-number")
       )
@@ -78,10 +78,10 @@ server <- function(input, output) {
   map_data <- read_sheet("https://docs.google.com/spreadsheets/d/1C1xjmxRPfIKKd6nZh_S4vi39xKQs3PyxjnrbCrmG8sw/edit#gid=0")
   
   r_map_data <- reactive({
-    req(input$distance)
+    req(input$distance, input$types)
     df <- map_data %>%
       filter(
-         name %in% input$names
+        type %in% input$types
         , distance_from <= input$distance)
   })
   
@@ -96,22 +96,22 @@ server <- function(input, output) {
                 , selected = types)
   })
   # Select a singular item from this search bar to show up on map
-  output$nameSearch <- renderUI({
-    req(input$types)
-    names <- map_data %>%
-      filter(type %in% input$types) %>%
-      select(name, type)
-    
-    pickerInput("names"
-                , div("Search Adventures:", class = "picker-titles")
-                , multiple = T
-                , choices = lapply(split(names$name, names$type), as.list)
-                , selected = names$name
-                , options =  pickerOptions(liveSearch = T
-                                           , liveSearchStyle = 'startsWith'
-                )
-    )
-  })
+  # output$nameSearch <- renderUI({
+  #   req(input$types)
+  #   names <- map_data %>%
+  #     filter(type %in% input$types) %>%
+  #     select(name, type)
+  #   
+  #   pickerInput("names"
+  #               , div("Search Adventures:", class = "picker-titles")
+  #               , multiple = T
+  #               , choices = lapply(split(names$name, names$type), as.list)
+  #               , selected = names$name
+  #               , options =  pickerOptions(liveSearch = T
+  #                                          , liveSearchStyle = 'startsWith'
+  #               )
+  #   )
+  # })
   
   output$distanceSlider <- renderUI({
     maxDistance <- max(map_data$distance_from)
@@ -177,9 +177,11 @@ server <- function(input, output) {
       addProviderTiles(provider = "Esri.WorldTopoMap") %>%
       addMarkers(label = data$name
                  , popup = data$popup_text
+                 , group = "Adventures"
       ) %>%
       addMarkers(lat = 35.155076, lng = -82.898274
                  , icon = logoIcon
+                 
                  , popup = HTML(
                    '<a href="https://earthshinenc.com/"> 
                    Website 
@@ -187,7 +189,8 @@ server <- function(input, output) {
                    <br>
                    <a href="https://earthshinenc.com/reservations/">
                    Book Now
-                   </a>')
+                   </a>'
+                   )
       ) %>%
       addLabelOnlyMarkers(
         lat = 34.8526
@@ -210,7 +213,9 @@ server <- function(input, output) {
         , lng = -82.1249
         , icon = airportIcon
         , popup = HTML("Greenville-Spartanburg Airport")
-      )
+      )  %>%
+      addResetMapButton()  %>%
+      addSearchFeatures(targetGroups = "Adventures")
   })
 }
 
